@@ -1,9 +1,11 @@
-package graphql
+package api
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 
-	"com.damonkelley/linkshortener/internal/database"
+	"com.damonkelley/shortcut/internal/shortcut"
 	"github.com/graphql-go/graphql"
 )
 
@@ -38,7 +40,7 @@ type link struct {
 	URL string `json:"url"`
 }
 
-func query(db database.Database) *graphql.Object {
+func query(db shortcut.Database) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
@@ -70,10 +72,18 @@ func (schema *GraphQL) Execute(query string) Result {
 
 }
 
-func NewGraphQL(database database.Database) Schema {
+func NewGraphQL(database shortcut.Database) Schema {
 	schema, _ := graphql.NewSchema(graphql.SchemaConfig{
 		Query: query(database),
 	})
 
 	return &GraphQL{Schema: schema}
+}
+
+func NewAPI(db shortcut.Database) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		result := NewGraphQL(db).Execute(r.URL.Query().Get("query"))
+
+		json.NewEncoder(w).Encode(result)
+	})
 }

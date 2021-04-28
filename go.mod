@@ -1,4 +1,4 @@
-module com.damonkelley/linkshortener
+module com.damonkelley/shortcut
 
 go 1.16
 

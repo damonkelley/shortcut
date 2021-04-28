@@ -1,4 +1,4 @@
-package database
+package shortcut
 
 import "net/url"
 
