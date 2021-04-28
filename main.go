@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"net/url"
 
-	api "com.damonkelley/shortcut/internal/api/adapter"
+	apiadapter "com.damonkelley/shortcut/internal/api/adapter"
 	"com.damonkelley/shortcut/internal/infrastructure"
-	shortcut "com.damonkelley/shortcut/internal/shortcut/adapter"
+	"com.damonkelley/shortcut/internal/shortcut"
+	"com.damonkelley/shortcut/internal/shortcut/adapter"
 )
 
 type ConstantDatabase struct{}
@@ -16,9 +17,14 @@ func (database *ConstantDatabase) Lookup(key string) (*url.URL, error) {
 }
 
 func main() {
-	db := &ConstantDatabase{}
-	http.Handle("/api", infrastructure.WithLogging(api.HTTPAPIAdapter(db)))
-	http.Handle("/", infrastructure.WithLogging(shortcut.HTTPShortCutAdapter(db)))
+	shortcuts := shortcut.NewShortcuts(
+		shortcut.NewRandomKeyGenerator(
+			shortcut.DefaultRandomKeyConfig(),
+		),
+	)
+
+	http.Handle("/api", infrastructure.WithLogging(apiadapter.HTTPAPIAdapter(shortcuts)))
+	http.Handle("/", infrastructure.WithLogging(adapter.HTTPShortCutAdapter(shortcuts)))
 
 	http.ListenAndServe(":8000", nil)
 }

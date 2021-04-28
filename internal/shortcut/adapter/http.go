@@ -6,7 +6,7 @@ import (
 	"com.damonkelley/shortcut/internal/shortcut"
 )
 
-func HTTPShortCutAdapter(db shortcut.Database) http.Handler {
+func HTTPShortCutAdapter(db shortcut.Lookup) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		redirectTo, err := db.Lookup(r.URL.Path)
 

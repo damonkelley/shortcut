@@ -8,7 +8,7 @@ import (
 	"com.damonkelley/shortcut/internal/shortcut"
 )
 
-func HTTPAPIAdapter(db shortcut.Database) http.Handler {
+func HTTPAPIAdapter(db shortcut.Lookup) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		result := api.NewGraphQL(db).Execute(r.URL.Query().Get("query"))
 

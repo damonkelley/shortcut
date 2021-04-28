@@ -40,7 +40,7 @@ type link struct {
 	URL string `json:"url"`
 }
 
-func query(db shortcut.Database) *graphql.Object {
+func query(db shortcut.Lookup) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
@@ -72,7 +72,7 @@ func (schema *GraphQL) Execute(query string) Result {
 
 }
 
-func NewGraphQL(database shortcut.Database) Schema {
+func NewGraphQL(database shortcut.Lookup) Schema {
 	schema, _ := graphql.NewSchema(graphql.SchemaConfig{
 		Query: query(database),
 	})
@@ -80,7 +80,7 @@ func NewGraphQL(database shortcut.Database) Schema {
 	return &GraphQL{Schema: schema}
 }
 
-func NewAPI(db shortcut.Database) http.Handler {
+func NewAPI(db shortcut.Lookup) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		result := NewGraphQL(db).Execute(r.URL.Query().Get("query"))
 
