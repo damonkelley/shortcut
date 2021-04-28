@@ -2,19 +2,12 @@ package main
 
 import (
 	"net/http"
-	"net/url"
 
 	apiadapter "com.damonkelley/shortcut/internal/api/adapter"
 	"com.damonkelley/shortcut/internal/infrastructure"
 	"com.damonkelley/shortcut/internal/shortcut"
 	"com.damonkelley/shortcut/internal/shortcut/adapter"
 )
-
-type ConstantDatabase struct{}
-
-func (database *ConstantDatabase) Lookup(key string) (*url.URL, error) {
-	return url.Parse("http://tyleemarsh.com")
-}
 
 func main() {
 	shortcuts := shortcut.NewShortcuts(
